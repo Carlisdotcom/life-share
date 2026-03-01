@@ -131,14 +131,14 @@
 
             const currentTheme = THEMES[themeIndex];
 
-            // Rhythmic heart animations - carefully timed
+            // Rhythmic heart animations - carefully timed for a steady flow
             const hearts = useMemo(() => {
-                return [...Array(10)].map((_, i) => ({
+                return [...Array(12)].map((_, i) => ({
                     id: i,
-                    left: `${(i * 10) + (Math.random() * 5)}%`, // Spread evenly across screen
-                    delay: `${i * 2.5}s`, // Staggered entry for rhythmic flow
-                    size: `${0.8 + Math.random() * 0.7}rem`,
-                    duration: `25s` // Constant speed for steady flow
+                    left: `${(i * 8) + (Math.random() * 4)}%`, // Spread across the width
+                    delay: `${i * 2.2}s`, // Staggered entry
+                    size: `${0.7 + Math.random() * 0.6}rem`,
+                    duration: `22s` // Consistent speed
                 }));
             }, []);
 
@@ -168,7 +168,7 @@
             // Background layer component
             const BackgroundAnimations = () => (
                 <>
-                    {/* Floating Hearts */}
+                    {/* Floating Hearts - Enhanced rhythmic flow */}
                     {hearts.map(h => (
                         <div key={h.id} className="animate-float" style={{ left: h.left, animationDelay: h.delay, fontSize: h.size, animationDuration: h.duration }}>
                             <Icon name="heart" className="text-teal-400/15" fill="currentColor" />
