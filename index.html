@@ -9,6 +9,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* Existing Floating Hearts Animation */
         @keyframes float {
             0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
             10% { opacity: 0.3; }
@@ -23,6 +24,34 @@
             pointer-events: none;
             z-index: 0;
         }
+
+        /* New Doodle Animations */
+        @keyframes skipRight {
+            0% { left: -10%; opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { left: 110%; opacity: 0; }
+        }
+        @keyframes skipLeft {
+            0% { right: -10%; opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { right: 110%; opacity: 0; }
+        }
+        @keyframes skipBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .doodle-container {
+            position: fixed;
+            bottom: 12%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .skip-right { animation: skipRight 30s linear infinite; left: -10%; }
+        .skip-left { animation: skipLeft 35s linear infinite; right: -10%; }
+        .bounce-doodle { animation: skipBounce 0.5s cubic-bezier(0.28, 0.84, 0.42, 1) infinite; }
+
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
@@ -125,14 +154,56 @@
                 notify("Story shared safely.");
             };
 
+            // Reusable component for the background so we don't duplicate code
+            const BackgroundAnimations = () => (
+                <>
+                    {/* Floating Hearts */}
+                    {hearts.map(h => (
+                        <div key={h.id} className="animate-float" style={{ left: h.left, animationDelay: h.delay, fontSize: h.size, animationDuration: h.duration }}>
+                            <Icon name="heart" className="text-teal-400/20" fill="currentColor" />
+                        </div>
+                    ))}
+                    
+                    {/* Doodle: Kid skipping right */}
+                    <div className="doodle-container skip-right" style={{ animationDelay: '2s' }}>
+                        <div className="bounce-doodle text-teal-400/30">
+                            <svg width="40" height="56" viewBox="0 0 48 64" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                {/* Balloon */}
+                                <circle cx="34" cy="12" r="10" fill="currentColor" fillOpacity="0.2"/>
+                                <path d="M34 22 Q 30 30, 18 38" />
+                                {/* Kid */}
+                                <circle cx="14" cy="36" r="5" />
+                                <path d="M14 41 v 11" />
+                                <path d="M14 44 l 4 -6" />
+                                <path d="M14 44 l -5 4" />
+                                <path d="M14 52 l -6 9 M14 52 l 7 8" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    {/* Doodle: Kid skipping left (flipped and smaller) */}
+                    <div className="doodle-container skip-left" style={{ animationDelay: '17s' }}>
+                        <div className="bounce-doodle text-rose-400/30 scale-x-[-1]">
+                            <svg width="32" height="48" viewBox="0 0 48 64" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                {/* Balloon */}
+                                <circle cx="34" cy="12" r="10" fill="currentColor" fillOpacity="0.2"/>
+                                <path d="M34 22 Q 30 30, 18 38" />
+                                {/* Kid */}
+                                <circle cx="14" cy="36" r="5" />
+                                <path d="M14 41 v 11" />
+                                <path d="M14 44 l 4 -6" />
+                                <path d="M14 44 l -5 4" />
+                                <path d="M14 52 l -6 9 M14 52 l 7 8" />
+                            </svg>
+                        </div>
+                    </div>
+                </>
+            );
+
             if (!hasAcceptedTerms) {
                 return (
                     <div className="min-h-screen flex items-center justify-center p-6 bg-slate-900 relative overflow-hidden">
-                        {hearts.map(h => (
-                            <div key={h.id} className="animate-float" style={{ left: h.left, animationDelay: h.delay, fontSize: h.size, animationDuration: h.duration }}>
-                                <Icon name="heart" className="text-teal-400/20" fill="currentColor" />
-                            </div>
-                        ))}
+                        <BackgroundAnimations />
                         <div className="max-w-md w-full bg-white rounded-[40px] p-10 shadow-2xl text-center relative z-10">
                             <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                                 <Icon name="shield-check" className="w-8 h-8 text-teal-600" />
@@ -153,13 +224,8 @@
             }
 
             return (
-                <div className={`min-h-screen transition-all duration-500 pb-40 ${currentTheme.class}`}>
-                    {/* Floating Hearts Background */}
-                    {hearts.map(h => (
-                        <div key={h.id} className="animate-float" style={{ left: h.left, animationDelay: h.delay, fontSize: h.size, animationDuration: h.duration }}>
-                            <Icon name="heart" className="text-teal-400/10" fill="currentColor" />
-                        </div>
-                    ))}
+                <div className={`min-h-screen transition-all duration-500 pb-40 ${currentTheme.class} relative overflow-hidden`}>
+                    <BackgroundAnimations />
 
                     <header className={`sticky top-0 z-40 p-4 border-b backdrop-blur-lg flex justify-between items-center ${currentTheme.name === "Midnight Calm" ? "bg-slate-900/80 border-slate-800" : "bg-white/80 border-slate-200"}`}>
                         <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setView("feed")}>
